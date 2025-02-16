@@ -1,18 +1,18 @@
-  {
-    "include": [
-      "./src",
-      "./src/types"
-    ],
-    "compilerOptions": {
-      "target": "es2016",
-      "module": "commonjs",
-      "rootDir": "./src",
-      "outDir": "./build",
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-      "strict": true,
-      "skipLibCheck": true
-    }
-  }
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "outDir": "./build",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "./src",
+    "./src/types"
+, "jest.config.js"  ]
+}

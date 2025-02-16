@@ -1,21 +1,38 @@
 import express, { Application } from "express";
-import { Server } from "./index";
+import { AppDataSource } from "./infrastructure/db/data-source";
 import { swaggerUi, swaggerSpec } from "./infrastructure/config/swagger.config";
+import { corsOptions } from "./infrastructure/config/cors.config";
+import Routes from "./api/routes/routes";
+import cors from "cors";
+import http, { Server } from "http";
 
-const app: Application = express();
-const server: Server = new Server(app);
-const PORT: number = 8080;
+export const startServer = async (): Promise<Server> => {
+  const app: Application = express();
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use(cors(corsOptions));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.listen(PORT, "0.0.0.0", function () {
-  console.log(`Servidor rodando na porta ${PORT}.`);
-  console.log(`Documentação Swagger disponível em: http://localhost:${PORT}/api-docs`);
-})
-.on("error", (err: any) => {
-  if (err.code === "EADDRINUSE") {
-    console.log("Erro: Endereço já em uso!");
-  } else {
-    console.log(err);
+  try {
+    await AppDataSource.initialize();
+    console.log("Banco de dados conectado.");
+
+    new Routes(app);
+
+    const PORT: number = 8080;
+    const server: Server = http.createServer(app); // Definindo o servidor HTTP
+
+    server.listen(PORT, "0.0.0.0", () => {
+      console.log(`Servidor rodando na porta ${PORT}.`);
+      console.log(`Documentação Swagger disponível em: http://localhost:${PORT}/api-docs`);
+    });
+
+    server.unref(); // Isso permite que o processo de testes finalize corretamente
+    return server;
+
+  } catch (error) {
+    console.error("Erro ao conectar ao banco de dados:", error);
+    throw error; // Re-lançando o erro, para que a falha seja tratada
   }
-});
+};

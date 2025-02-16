@@ -1,7 +1,19 @@
-import { EntityRepository, Repository } from "typeorm";
+import { Repository } from "typeorm";
+import { AppDataSource } from "../../infrastructure/db/data-source";
 import { Streak } from "../models/Streak";
 
-@EntityRepository(Streak)
-export class StreakRepository extends Repository<Streak> {
-  // Custom queries can go here
+export class StreakRepository {
+  private streakRepository: Repository<Streak>;
+
+  constructor() {
+    this.streakRepository = AppDataSource.getRepository(Streak);
+  }
+
+  async findOneByUserId(userId: string): Promise<Streak | null> {
+    return this.streakRepository.findOne({ where: { user: { id: userId } } });
+  }
+
+  async save(streak: Streak): Promise<Streak> {
+    return this.streakRepository.save(streak);
+  }
 }
