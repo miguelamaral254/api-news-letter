@@ -1,4 +1,3 @@
-// src/domain/services/UserService.ts
 import { AppDataSource } from "../../infrastructure/db/data-source";
 import { User } from "../models/User";
 import { Repository } from "typeorm";
@@ -25,5 +24,15 @@ export class UserService {
   async getAll(): Promise<UserResponseDTO[]> {
     const users = await this.userRepository.find();
     return users.map((user) => new UserResponseDTO(user));
+  }
+
+  async getByEmail(email: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    return user || null;  
+  
+  }
+  async getById(userId: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    return user || null;
   }
 }

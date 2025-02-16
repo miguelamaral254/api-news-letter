@@ -1,31 +1,37 @@
-// src/domain/services/EngagementMetricsService.ts
-import { AppDataSource } from "../../infrastructure/db/data-source";
+import { EngagementMetricsRepository } from "../repositories/EngagementMetricsRepository";
 import { EngagementMetrics } from "../models/EngagementMetrics";
-import { Repository } from "typeorm";
-
-import { validateOrReject } from "class-validator";
-import { EngagementMetricsCreateDTO } from "../dtos/engagement-metrics/EngagementMetricsCreateDTO";
-import { EngagementMetricsResponseDTO } from "../dtos/engagement-metrics/EngagementMetricsResponseDTO";
+import { User } from "../models/User";
 
 export class EngagementMetricsService {
-  private engagementMetricsRepository: Repository<EngagementMetrics>;
+  private engagementMetricsRepository: EngagementMetricsRepository;
 
   constructor() {
-    this.engagementMetricsRepository = AppDataSource.getRepository(EngagementMetrics);
+    this.engagementMetricsRepository = new EngagementMetricsRepository();
   }
 
-  async create(metricsData: EngagementMetricsCreateDTO): Promise<EngagementMetricsResponseDTO> {
-    // Valida os dados de entrada
-    await validateOrReject(metricsData);
+  async createEngagementMetrics(user: User): Promise<EngagementMetrics> {
+    const metrics = new EngagementMetrics();
+    metrics.user = user;
+    metrics.opens = 0;
+    metrics.clicks = 0;
+    metrics.shares = 0;
 
-    const metrics = this.engagementMetricsRepository.create(metricsData);
-    const savedMetrics = await this.engagementMetricsRepository.save(metrics);
-
-    return new EngagementMetricsResponseDTO(savedMetrics);
+    return await this.engagementMetricsRepository.save(metrics);
   }
 
-  async getAll(): Promise<EngagementMetricsResponseDTO[]> {
-    const metrics = await this.engagementMetricsRepository.find({ relations: ["user"] });
-    return metrics.map((metric) => new EngagementMetricsResponseDTO(metric));
+  async updateEngagementMetrics(metrics: EngagementMetrics, action: "open" | "click" | "share"): Promise<EngagementMetrics> {
+    if (action === "open") {
+      metrics.opens += 1;
+    } else if (action === "click") {
+      metrics.clicks += 1;
+    } else if (action === "share") {
+      metrics.shares += 1;
+    }
+
+    return await this.engagementMetricsRepository.save(metrics);
+  }
+
+  async getMetricsByUser(user: User): Promise<EngagementMetrics | null> {
+    return this.engagementMetricsRepository.findOneByUserId(user.id);
   }
 }
