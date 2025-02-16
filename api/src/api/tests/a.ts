@@ -10,7 +10,7 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
-  server.close(); // Fechar o servidor corretamente
+  server.close(); 
 });
 
 describe("POST /webhook", () => {

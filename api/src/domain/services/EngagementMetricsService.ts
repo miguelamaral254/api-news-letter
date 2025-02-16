@@ -1,4 +1,3 @@
-// src/domain/services/EngagementMetricsService.ts
 import { EngagementMetricsRepository } from "../repositories/EngagementMetricsRepository";
 import { EngagementMetrics } from "../models/EngagementMetrics";
 import { User } from "../models/User";
@@ -10,7 +9,6 @@ export class EngagementMetricsService {
     this.engagementMetricsRepository = new EngagementMetricsRepository();
   }
 
-  // Criar ou inicializar as métricas de engajamento para o usuário
   async createEngagementMetrics(user: User): Promise<EngagementMetrics> {
     const metrics = new EngagementMetrics();
     metrics.user = user;
@@ -21,7 +19,6 @@ export class EngagementMetricsService {
     return await this.engagementMetricsRepository.save(metrics);
   }
 
-  // Atualizar as métricas com base na ação (open, click, share)
   async updateEngagementMetrics(metrics: EngagementMetrics, action: "open" | "click" | "share"): Promise<EngagementMetrics> {
     if (action === "open") {
       metrics.opens += 1;
@@ -34,7 +31,6 @@ export class EngagementMetricsService {
     return await this.engagementMetricsRepository.save(metrics);
   }
 
-  // Buscar as métricas de engajamento para um usuário
   async getMetricsByUser(user: User): Promise<EngagementMetrics | null> {
     return this.engagementMetricsRepository.findOneByUserId(user.id);
   }
