@@ -41,5 +41,4 @@ const router = Router();
  *          description: Erro ao processar a streak
  */
 router.post("/", webhookController.handleWebhook.bind(webhookController));
-
 export default router;
