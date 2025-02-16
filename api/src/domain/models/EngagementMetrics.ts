@@ -19,4 +19,16 @@ export class EngagementMetrics {
 
   @Column("int", { default: 0 })
   shares!: number;
+
+  @Column("int", { default: 0 })
+  unsubscribes!: number;
+
+  @Column("int", { default: 0 })
+  spamReports!: number;
+
+  @Column("int", { default: 0 })
+  recipients!: number;
+
+  @Column("int", { default: 0 })
+  delivered!: number;
 }

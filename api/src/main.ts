@@ -6,9 +6,10 @@ import Routes from "./api/routes/routes";
 import cors from "cors";
 import http, { Server } from "http";
 
-export const startServer = async (): Promise<Server> => {
-  const app: Application = express();
+const app: Application = express();
+const PORT: number = 8080;
 
+const startServer = async (): Promise<Server> => {
   app.use(cors(corsOptions));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -20,19 +21,21 @@ export const startServer = async (): Promise<Server> => {
 
     new Routes(app);
 
-    const PORT: number = 8080;
-    const server: Server = http.createServer(app); // Definindo o servidor HTTP
-
+    const server: Server = http.createServer(app);
     server.listen(PORT, "0.0.0.0", () => {
       console.log(`Servidor rodando na porta ${PORT}.`);
       console.log(`Documentação Swagger disponível em: http://localhost:${PORT}/api-docs`);
     });
 
-    server.unref(); // Isso permite que o processo de testes finalize corretamente
+    server.unref(); 
     return server;
 
   } catch (error) {
     console.error("Erro ao conectar ao banco de dados:", error);
-    throw error; // Re-lançando o erro, para que a falha seja tratada
+    throw error;
   }
 };
+
+startServer().catch((error) => {
+  console.error("Erro ao iniciar o servidor:", error);
+});
