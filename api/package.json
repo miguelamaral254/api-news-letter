@@ -1,11 +1,11 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "jest",
-    "dev": "ts-node src/index.ts",
-    "start": "node build/index.js"
+    "dev": "ts-node src/main.ts",
+    "start": "node build/main.js"
   },
   "keywords": [],
   "author": "",
